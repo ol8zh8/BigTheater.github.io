@@ -1,0 +1,242 @@
+$(function() {
+    // инициация тогглеров
+    $('.block_toggler .pseudo').click(function(){
+        $(this).parents('.block_toggler').next('.block_hidden').slideDown('fast');
+        $(this).parents('.block_toggler').hide();
+    });
+
+    // инициаиця скроллера
+    //if($.fn.photoscroll){
+    //    $('.main_photoset').photoscroll({controller: $('.main_photoslider')});
+    //}
+});
+
+/*
+$(function(){
+    var
+        $Frame = $('.home_scroll_wrap')
+    ;
+    if(!$Frame.length) return;
+
+    var
+        $Left = $('.home_scroll_arrow_l'),
+        $Right = $('.home_scroll_arrow_r'),
+        $Frames = $('.home_scroll_wrap .home_splash__item'),
+        iCount = $Frames.length,
+        bProcessing = 0
+    ;
+
+    _check();
+
+    $Right
+        .click(function(){
+            if(bProcessing) return;
+
+            var l = _left()-100;
+
+            if(l > - iCount * 100){
+                _hideButtons();
+                bProcessing = 1;
+
+                $Frame.animate({'left': (l + '%')},'slow',function(){
+                    _check();
+                    bProcessing = 0;
+                })
+            }
+        })
+    ;
+    $Left
+        .click(function(){
+            if(bProcessing) return;
+
+            var l = _left()+100;
+            //console.log(l);
+            if(l <= 0){
+                _hideButtons();
+
+                bProcessing = 1;
+                $Frame.animate({'left': (l + '%')},'slow',function(){
+                    _check();
+                    bProcessing = 0;
+                })
+            }
+        })
+    ;
+    function _hideButtons(){
+        $Left.hide();
+        $Right.hide();
+    }
+    function _check(){
+        $Left.toggle(_left() < 0);
+        $Right.toggle(_left() > - (iCount - 1) * 100);
+    }
+
+    function _left(){
+        return parseInt($Frame[0].style.left)||0;
+    }
+});
+/**/
+
+
+$(function(){
+    var
+        $Frame = $('.home_scroll_wrap')
+    ;
+    if(!$Frame.length) return;
+
+
+    var
+        $Left = $('.home_scroll_arrow_l'),
+        $Right = $('.home_scroll_arrow_r'),
+        $Frames = $('.home_scroll_wrap .home_splash__item'),
+        iCount = $Frames.length,
+        bProcessing = 0
+    ;
+
+    if($Frames.length < 2){
+        _hideButtons();
+        return;
+    }
+
+    //_check();
+    //_hideButtons();
+
+    $Right.css('right','-40px');
+    $Left.css('left','-40px');
+
+    var $Img = $('<img src="/f/1/global/mp_scroll_arrows.png" />')
+        .css({
+            'position' : 'absolute',
+            'visibility' : 'hidden'
+        })
+        .appendTo($Right)
+    ;
+
+    $Img.load(function(){
+        $Img.remove();
+
+        _showButtons();
+        /*
+        $Right
+            .animate({'right': ('20px')},'slow',function(){})
+        ;
+        $Left.animate({'left': ('20px')},'slow',function(){});/**/
+    });
+
+
+    $Right
+        .click(function(){
+            if(bProcessing) return;
+
+            //_hideButtons();
+            bProcessing = 1;
+            _hideButtons1(function(){
+                $Frame.animate({'left': ('-100%')},'slow',function(){
+                //    _check();
+
+                    $Frames.eq(0).appendTo($Frames.parent());
+                    $Frames = $Frame.find('.home_splash__item');
+
+                    $Frame.css('left','0');
+
+                    _showButtons();
+
+                    bProcessing = 0;
+                });
+            });
+        })
+    ;
+    $Left
+        .click(function(){
+            if(bProcessing) return;
+
+            //_hideButtons();
+            bProcessing = 1;
+
+            _hideButtons1(function(){
+
+                $Frames.eq($Frames.length - 1).prependTo($Frames.parent());
+                $Frames = $Frame.find('.home_splash__item');
+
+                $Frame.css('left','-100%');
+
+                $Frame.animate({'left': ('0%')},'slow',function(){
+                    _showButtons();
+                    bProcessing = 0;
+                });
+            });
+        })
+    ;
+    function _hideButtons(){
+        $Left.hide();
+        $Right.hide();
+    };
+
+    function _hideButtons1(fFunc){
+        $Right
+            .animate({'right': ('-40px')},'fast',fFunc)
+        ;
+        $Left
+            .animate({'left': ('-40px')},'fast',function(){})
+        ;
+    };
+
+    function _showButtons(){
+        $Right
+            .css('right','-40px')
+            .show()
+            .animate({'right': ('20px')},'slow',function(){})
+        ;
+        $Left
+            .css('left','-40px')
+            .show()
+            .animate({'left': ('20px')},'slow',function(){})
+        ;
+    };
+    function _check(){
+        $Left.toggle(_left() < 0);
+        $Right.toggle(_left() > - (iCount - 1) * 100);
+    };
+
+    function _left(){
+        return parseInt($Frame[0].style.left)||0;
+    };
+});
+
+
+
+$(function(){
+    var
+        $PerfFrame = $('.home_performances_wrapper')
+    ;
+    if(!$PerfFrame.length) return;
+
+    var
+        $PerfLinks = $('.home_performances_filter .pseudo'),
+        $PerfFrames = $('.home_performances_wrapper .home_performances'),
+        iPerfCount = $PerfFrames.length,
+        bPerfProcessing = 0
+    ;
+
+    $PerfLinks
+        .click(function(){
+            if(bPerfProcessing) return;
+
+            var l = - (_shift(this) * 100);
+            
+            $PerfLinks.removeClass('active');
+            $(this).addClass('active');
+
+            if(l > - iPerfCount * 100){
+                bPerfProcessing = 1;
+
+                $PerfFrame.animate({'left': (l + '%')},'slow',function(){
+                    bPerfProcessing = 0;
+                })
+            }
+        })
+    ;
+    function _shift(el){
+        return $(el).parent().prevAll('li').length||0;
+    }
+});
